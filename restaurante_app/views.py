@@ -8,6 +8,18 @@ from .models import Producto, Ticket, Cliente
 from .forms import ProductoForm
 from .forms import ClienteForm
 
+def agregar_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            # Guardar el producto si el formulario es válido
+            form.save()
+            return redirect('lista_productos')
+    else:
+        form = ProductoForm()
+
+    return render(request, 'agregar_producto.html', {'form': form})
+
 def listar_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'restaurante_app/listar_clientes.html', {'clientes': clientes})

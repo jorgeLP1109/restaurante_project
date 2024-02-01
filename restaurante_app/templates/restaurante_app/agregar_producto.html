@@ -1,20 +1,24 @@
-<!-- restaurante_app/templates/restaurante_app/agregar_producto.html -->
-
-{% extends 'base.html' %}  <!-- Ajusta según tu estructura de plantillas base -->
+{% extends 'base.html' %}
 
 {% block content %}
-  <h2>Agregar Producto</h2>
-  <form method="post" action="{% url 'agregar_producto' %}">
-    {% csrf_token %}
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" required>
-    <br>
-    <label for="descripcion">Descripción:</label>
-    <textarea name="descripcion" required></textarea>
-    <br>
-    <label for="precio">Precio:</label>
-    <input type="number" name="precio" step="0.01" required>
-    <br>
-    <button type="submit">Agregar Producto</button>
-  </form>
+    <div class="container mt-4">
+        <h2>Agregar Producto</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="mb-3">
+                {{ form.nombre.label_tag }}
+                {{ form.nombre }}
+            </div>
+            <div class="mb-3">
+                {{ form.descripcion.label_tag }}
+                {{ form.descripcion }}
+            </div>
+            <div class="mb-3">
+                {{ form.precio.label_tag }}
+                {{ form.precio }}
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Producto</button>
+        </form>
+    </div>
 {% endblock %}

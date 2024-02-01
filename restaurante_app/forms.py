@@ -6,7 +6,7 @@ from .models import Cliente
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['nombre', 'precio', 'descripcion']  # Ajusta según los campos de tu modelo
+        fields = ['nombre', 'descripcion', 'precio']
 
 
 class ClienteForm(forms.ModelForm):
