@@ -1,0 +1,23 @@
+<!-- templates/restaurante_app/admin_interface.html -->
+{% extends 'restaurante_app/base.html' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+  <h2>Interfaz de Administrador</h2>
+
+  <h3>Productos</h3>
+  {% for producto in productos %}
+    {{ producto.nombre }} - {{ producto.precio }} <br>
+  {% endfor %}
+
+  <h3>Tickets</h3>
+  {% for ticket in tickets %}
+    {{ ticket.numero }} - {{ ticket.total }} <br>
+  {% endfor %}
+
+  <h3>Otras Entidades</h3>
+  {% for entidad in otras_entidades %}
+    {{ entidad.nombre }} - {{ entidad.descripcion }} <br>
+  {% endfor %}
+{% endblock %}
