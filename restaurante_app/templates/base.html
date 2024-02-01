@@ -1,0 +1,42 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tu Restaurante{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{% block header %}Restaurante App{% endblock %}</h1>
+        <!-- Puedes agregar más elementos de cabecera según tus necesidades -->
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{% url 'inicio' %}">Inicio</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'agregar_producto' %}">Agregar Producto</a></li>
+            <li><a href="{% url 'registrar_usuario' %}">Registrar Usuario</a></li>
+            <li>
+                <form action="{% url 'cerrar_sesion' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar Sesión</button>
+                </form>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <!-- Puedes agregar información de pie de página según tus necesidades -->
+        <p>&copy; 2024 Tu Restaurante</p>
+    </footer>
+</body>
+</html>
