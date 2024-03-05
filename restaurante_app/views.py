@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Producto, Ticket, Cliente
 from .forms import ProductoForm
 from .forms import ClienteForm
+from django.urls import reverse
+
 
 def agregar_producto(request):
     if request.method == 'POST':
@@ -18,7 +20,7 @@ def agregar_producto(request):
     else:
         form = ProductoForm()
 
-    return render(request, 'agregar_producto.html', {'form': form})
+    return render(request, 'restaurante_app/agregar_producto.html', {'form': form})
 
 def listar_clientes(request):
     clientes = Cliente.objects.all()
@@ -96,23 +98,38 @@ def registrar_usuario(request):
 def inicio(request):
     return render(request, 'restaurante_app/inicio.html')
 
-@permission_required('restaurante_app.can_agregar_producto', login_url='login')
-def agregar_producto(request):
+
+
+@login_required
+def profile(request):
+    return render(request, 'restaurante_app/profile.html')
+
+
+@login_required
+def ver_perfil(request):
+    # Aquí puedes agregar lógica para obtener información adicional del usuario si es necesario
+    return render(request, 'restaurante_app/profile.html')
+
+def lista_productos(request):
+    productos = Producto.objects.all()  # Obtener todos los productos
+    return render(request, 'restaurante_app/lista_productos.html', {'productos': productos})
+
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, id=pk)
     if request.method == 'POST':
-        # Procesar el formulario si se envió uno
-        # Aquí debes manejar la lógica para agregar un nuevo producto a la base de datos
-        # Puedes acceder a los datos del formulario usando request.POST
+        form = ProductoForm(request.POST, instance=producto)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_productos')
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'restaurante_app/editar_producto.html', {'form': form})
+    
 
-        # Ejemplo:
-        nombre = request.POST['nombre']
-        descripcion = request.POST['descripcion']
-        precio = request.POST['precio']
 
-        # Crea el nuevo producto
-        Producto.objects.create(nombre=nombre, descripcion=descripcion, precio=precio)
+def eliminar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    # Lógica para eliminar el producto
+    producto.delete()
+    return redirect('lista_productos')
 
-        # Redirige a alguna página de éxito o muestra un mensaje
-        return redirect('pagina_de_exito')  # Ajusta la URL según tus necesidades
-
-    # Si no es una solicitud POST, renderiza el formulario
-    return render(request, 'restaurante_app/agregar_producto.html')  # Ajusta el nombre de la plantilla según tus necesidades

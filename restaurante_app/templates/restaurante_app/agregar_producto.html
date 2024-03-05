@@ -5,7 +5,6 @@
         <h2>Agregar Producto</h2>
         <form method="post" class="form">
             {% csrf_token %}
-            {{ form.as_p }}
             <div class="mb-3">
                 {{ form.nombre.label_tag }}
                 {{ form.nombre }}

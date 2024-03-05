@@ -1,5 +1,12 @@
 <!-- templates/restaurante_app/inicio.html -->
+
 {% extends 'base.html' %}
+{% if user.is_authenticated %}
+    <p>Bienvenido, {{ user.username }}.</p>
+{% else %}
+    <a href="{% url 'login' %}">Iniciar sesión</a>
+{% endif %}
+
 
 {% block title %}Inicio{% endblock %}
 

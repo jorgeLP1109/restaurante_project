@@ -25,12 +25,14 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
+                <a href="{% url 'login' %}">Iniciar sesión</a>
             </li>
-            <li class="nav-item">
+            
                 {% if user.is_authenticated %}
                 <a class="nav-link" href="{% url 'agregar_producto' %}">Agregar Producto</a>
                 <a class="nav-link" href="{% url 'registrar_usuario' %}">Registrar Usuario</a>
-            
+                <a class="nav-link" href="{% url 'lista_productos' %}">Lista de Productos</a>
+                
             <li>
                 <form action="{% url 'cerrar_sesion' %}" method="post">
                     {% csrf_token %}

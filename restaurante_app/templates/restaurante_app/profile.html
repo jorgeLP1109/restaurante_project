@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+<h2>Perfil de Usuario</h2>
+<!-- Mostrar detalles del usuario -->
+<div>
+    <strong>Nombre de usuario:</strong> {{ user.username }}<br>
+    <strong>Email:</strong> {{ user.email }}
+    <!-- Agrega más campos según necesites -->
+</div>
+{% endblock %}
