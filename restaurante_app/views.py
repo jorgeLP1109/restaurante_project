@@ -92,11 +92,22 @@ def cerrar_mesa(request, mesa_id):
     # Actualiza el total diario
     contabilidad.total_diario += total
     contabilidad.save()
+        
 
-    # Elimina la mesa de la lista
-    mesa.delete()
+    mesas_abiertas = Mesa.objects.filter(abierta=True)  # Asumiendo que 'estado' es un campo que indica si la mesa está abierta o cerrada
+    return render(request, 'restaurante_app/cerrar_mesa_seleccionar.html', {'mesas_abiertas': mesas_abiertas})
+    #return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
 
-    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
+    #mesa.delete()
+def cerrar_mesa_detalle(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+    comandas = Comanda.objects.filter(mesa=mesa)
+    total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
+
+    mesas_abiertas = Mesa.objects.filter(abierta=True)  # Obtener las mesas abiertas
+
+    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total, 'mesas_abiertas': mesas_abiertas})
+
 
 def agregar_producto(request):
     if request.method == 'POST':
