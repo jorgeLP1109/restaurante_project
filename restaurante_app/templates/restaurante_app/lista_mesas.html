@@ -3,10 +3,13 @@
 
 {% block content %}
     <h2>Lista de Mesas</h2>
+
     <ul>
         {% for mesa in mesas %}
-            <li>{{ mesa.nombre }} - {% if mesa.abierta %}Abierta{% else %}Cerrada{% endif %} - <a href="{% url 'cerrar_mesa' mesa.id %}">Cerrar Mesa</a></li>
+            <li>
+                {{ mesa.nombre }}
+                <a href="{% url 'agregar_comanda' mesa_id=mesa.id %}">Agregar Comanda</a>
+            </li>
         {% endfor %}
     </ul>
-    <a href="{% url 'abrir_mesa' %}">Abrir Nueva Mesa</a>
 {% endblock %}

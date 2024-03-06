@@ -8,11 +8,29 @@ from .models import Producto, Ticket, Cliente
 from .forms import ProductoForm
 from .forms import ClienteForm
 from django.urls import reverse
-from .models import Mesa, Comanda
+from .models import Mesa, Comanda, Contabilidad
 from .forms import MesaForm
-from .models import Comanda
 from .forms import ComandaForm
 from django.http import JsonResponse
+from datetime import datetime
+
+def agregar_comanda(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+    productos = Producto.objects.all()  # Obtén todos los productos, puedes ajustar esto según tus necesidades
+
+    if request.method == 'POST':
+        producto_id = request.POST.get('producto_id')
+        cantidad = request.POST.get('cantidad')
+
+        if producto_id and cantidad:
+            producto = get_object_or_404(Producto, id=producto_id)
+            comanda, created = Comanda.objects.get_or_create(mesa=mesa, producto=producto)
+            comanda.cantidad += int(cantidad)
+            comanda.save()
+
+    comandas = Comanda.objects.filter(mesa=mesa)
+
+    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'comandas': comandas})
 
 def crear_comanda(request):
     if request.method == 'POST':
@@ -43,12 +61,42 @@ def abrir_mesa(request):
         form = MesaForm()
     return render(request, 'restaurante_app/abrir_mesa.html', {'form': form})
 
+'''def cerrar_mesa(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+    comandas = Comanda.objects.filter(mesa=mesa)
+    total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
+
+    contabilidad, created = Contabilidad.objects.get_or_create(fecha_cierre__date=datetime.date.today())
+    contabilidad.total_diario += total
+    contabilidad.save()
+
+    # Eliminar la mesa y comandas
+    mesa.delete()
+    comandas.delete()
+
+    #return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
+
+    return JsonResponse({'success': True, 'total': total})
+'''
 def cerrar_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)
     total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
-    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
 
+    # Lógica para cerrar la mesa
+    contabilidad = Contabilidad.objects.last()  # Obtén la última instancia de Contabilidad
+    if not contabilidad or contabilidad.fecha_cierre.date() != datetime.now().date():
+        # Si no hay contabilidad para hoy, crea una nueva instancia de Contabilidad
+        contabilidad = Contabilidad.objects.create()
+
+    # Actualiza el total diario
+    contabilidad.total_diario += total
+    contabilidad.save()
+
+    # Elimina la mesa de la lista
+    mesa.delete()
+
+    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
 
 def agregar_producto(request):
     if request.method == 'POST':

@@ -1,7 +1,15 @@
 # en el archivo models.py de tu aplicación (restaurante_app/models.py)
 
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User, Group
+
+class Contabilidad(models.Model):
+    fecha_cierre = models.DateTimeField(default=timezone.now)
+    total_diario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return f'Contabilidad - {self.fecha_cierre.date()}'
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=255)

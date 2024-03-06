@@ -1,0 +1,28 @@
+<!-- restaurante_app/templates/restaurante_app/agregar_comanda.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Agregar Comanda - {{ mesa.nombre }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="producto">Producto:</label>
+        <select name="producto_id" id="producto">
+            {% for producto in productos %}
+                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+            {% endfor %}
+        </select>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" id="cantidad" min="1" value="1">
+        <button type="submit">Agregar Comanda</button>
+    </form>
+
+    <h3>Comandas Actuales:</h3>
+    <ul>
+        {% for comanda in comandas %}
+            <li>{{ comanda.producto.nombre }} - {{ comanda.cantidad }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'cerrar_mesa' mesa_id=mesa.id %}">Cerrar Mesa</a>
+{% endblock %}
