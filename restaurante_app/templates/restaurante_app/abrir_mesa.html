@@ -1,0 +1,11 @@
+<!-- restaurante_app/templates/restaurante_app/abrir_mesa.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Abrir Nueva Mesa</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Abrir Mesa</button>
+    </form>
+{% endblock %}

@@ -8,6 +8,46 @@ from .models import Producto, Ticket, Cliente
 from .forms import ProductoForm
 from .forms import ClienteForm
 from django.urls import reverse
+from .models import Mesa, Comanda
+from .forms import MesaForm
+from .models import Comanda
+from .forms import ComandaForm
+from django.http import JsonResponse
+
+def crear_comanda(request):
+    if request.method == 'POST':
+        form = ComandaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_mesas')  # Redirige a donde desees después de crear la comanda
+    else:
+        form = ComandaForm()
+
+    return render(request, 'restaurante_app/crear_comanda.html', {'form': form})
+
+def ver_comandas(request):
+    comandas = Comanda.objects.all()
+    return render(request, 'restaurante_app/ver_comandas.html', {'comandas': comandas})
+
+def lista_mesas(request):
+    mesas = Mesa.objects.all()
+    return render(request, 'restaurante_app/lista_mesas.html', {'mesas': mesas})
+
+def abrir_mesa(request):
+    if request.method == 'POST':
+        form = MesaForm(request.POST)
+        if form.is_valid():
+            mesa = form.save()
+            return redirect('lista_mesas')
+    else:
+        form = MesaForm()
+    return render(request, 'restaurante_app/abrir_mesa.html', {'form': form})
+
+def cerrar_mesa(request, mesa_id):
+    mesa = get_object_or_404(Mesa, id=mesa_id)
+    comandas = Comanda.objects.filter(mesa=mesa)
+    total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
+    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
 
 
 def agregar_producto(request):

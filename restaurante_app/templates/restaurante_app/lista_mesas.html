@@ -1,0 +1,12 @@
+<!-- restaurante_app/templates/restaurante_app/lista_mesas.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Lista de Mesas</h2>
+    <ul>
+        {% for mesa in mesas %}
+            <li>{{ mesa.nombre }} - {% if mesa.abierta %}Abierta{% else %}Cerrada{% endif %} - <a href="{% url 'cerrar_mesa' mesa.id %}">Cerrar Mesa</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'abrir_mesa' %}">Abrir Nueva Mesa</a>
+{% endblock %}

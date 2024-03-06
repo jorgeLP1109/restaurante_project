@@ -36,11 +36,22 @@ class Producto(models.Model):
         return self.nombre
 
 class Mesa(models.Model):
-    numero = models.IntegerField(unique=True)
-    ocupada = models.BooleanField(default=False)
+    nombre = models.CharField(max_length=100)
+    abierta = models.BooleanField(default=False)
+    cliente_nombre = models.CharField(max_length=100, blank=True, null=True)
+    cliente_identificacion = models.CharField(max_length=20, blank=True, null=True)
+    total_diario = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return f"Mesa {self.numero}"
+        return self.nombre
+
+class Comanda(models.Model):
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.producto.nombre} - {self.cantidad}"
 
 class Cuenta(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)

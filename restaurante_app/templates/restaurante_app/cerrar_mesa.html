@@ -1,0 +1,46 @@
+<!-- En cerrar_mesa.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Cerrar Mesa - {{ mesa.nombre }}</h2>
+    <h3>Comandas:</h3>
+    <ul>
+        {% for comanda in comandas %}
+            <li>{{ comanda.producto.nombre }} - {{ comanda.cantidad }}</li>
+        {% endfor %}
+    </ul>
+    <p>Total: ${{ total }}</p>
+
+    <!-- Botón para abrir el modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cerrarMesaModal">
+        Cerrar Mesa
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="cerrarMesaModal" tabindex="-1" role="dialog" aria-labelledby="cerrarMesaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cerrarMesaModalLabel">Cerrar Mesa - {{ mesa.nombre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal -->
+                    <h3>Comandas:</h3>
+                    <ul>
+                        {% for comanda in comandas %}
+                            <li>{{ comanda.producto.nombre }} - {{ comanda.cantidad }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p>Total: ${{ total }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <!-- Agrega aquí el botón para confirmar el cierre de la mesa y realizar cualquier acción adicional -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- templates/restaurante_app/crear_comanda.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Crear Comanda{% endblock %}
+
+{% block content %}
+  <h2>Crear Comanda</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear Comanda</button>
+  </form>
+{% endblock %}
