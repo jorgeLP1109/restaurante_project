@@ -28,6 +28,7 @@
             if (mesaId) {
                 // Construye la URL de redirección con el ID de la mesa seleccionada
                 var redirectUrl = "{% url 'cerrar_mesa' mesa_id=0 %}".replace('0', mesaId);
+
                 // Redirige a la nueva URL
                 window.location.href = redirectUrl;
             } else {
