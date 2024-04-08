@@ -1,40 +1,11 @@
-<!-- En tu plantilla cerrar_mesa_seleccionar.html -->
 {% extends 'base.html' %}
 
 {% block content %}
     <h2>Seleccionar Mesa para Cerrar</h2>
 
-    <div>
-        <label for="mesa">Seleccione una mesa:</label>
-
-        <div style="max-height: 400px; overflow-y: auto;">
-            <select name="mesa" id="mesa" style="width: 50%;">
-                {% for mesa in mesas_abiertas %}
-                    <option value="{{ mesa.id }}">{{ mesa.nombre }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <button type="button" onclick="cerrarMesa()">Cerrar Mesa</button>
-    </div>
-
-    <!-- Script JavaScript -->
-    <script>
-        function cerrarMesa() {
-            // Obtiene el valor seleccionado del select
-            var mesaId = document.getElementById('mesa').value;
-
-            // Verifica si se seleccionó una mesa
-            if (mesaId) {
-                // Construye la URL de redirección con el ID de la mesa seleccionada
-                var redirectUrl = "{% url 'cerrar_mesa' mesa_id=0 %}".replace('0', mesaId);
-
-                // Redirige a la nueva URL
-                window.location.href = redirectUrl;
-            } else {
-                // Si no se selecciona ninguna mesa, puedes mostrar un mensaje de error o simplemente alertar al usuario
-                alert("Por favor, selecciona una mesa antes de cerrarla.");
-            }
-        }
-    </script>
+    <form method="post" id="cerrarMesaForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Cerrar Mesa</button>
+    </form>
 {% endblock %}

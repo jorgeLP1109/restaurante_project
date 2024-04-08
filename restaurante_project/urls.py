@@ -7,7 +7,7 @@ from django.contrib.auth.views import LogoutView
 from restaurante_app.views import profile
 from restaurante_app.views import lista_mesas, abrir_mesa
 from restaurante_app.views import crear_comanda, ver_comandas, agregar_comanda, cerrar_mesa, cerrar_mesa_detalle
-from restaurante_app.views import cerrar_mesa_seleccionar
+
 app_name = 'restaurante_app'
 
 urlpatterns = [
@@ -29,8 +29,8 @@ urlpatterns = [
     path('ver_comandas/', ver_comandas, name='ver_comandas'),
     path('agregar_comanda/<int:mesa_id>/', agregar_comanda, name='agregar_comanda'),
     path('cerrar_mesa/<int:mesa_id>/', cerrar_mesa, name='cerrar_mesa'),
-    #path('cerrar_mesa/<int:mesa_id>/', cerrar_mesa_detalle, name='cerrar_mesa_detalle'),
-    path('cerrar_mesa_seleccionar/', cerrar_mesa_seleccionar, name='cerrar_mesa_seleccionar'),
+    
+   
     
    
     

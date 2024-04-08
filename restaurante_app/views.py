@@ -13,6 +13,7 @@ from .forms import MesaForm
 from .forms import ComandaForm
 from django.http import JsonResponse
 from datetime import datetime
+from .forms import CerrarMesaForm
 
 def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
@@ -93,15 +94,13 @@ def cerrar_mesa(request, mesa_id):
     contabilidad.total_diario += total
     contabilidad.save()
 
-    # Obtén las mesas abiertas (excluyendo la mesa actual)
-    mesas_abiertas = Mesa.objects.exclude(id=mesa_id, abierta=False)
+    # Eliminar la mesa y redirigir a la lista de mesas
+    mesa.delete()
 
-    return render(request, 'restaurante_app/cerrar_mesa_seleccionar.html', {'mesas_abiertas': mesas_abiertas})
-    #mesa.delete()
+    return redirect('lista_mesas')
 
-def cerrar_mesa_seleccionar(request):
-    mesas_abiertas = Mesa.objects.filter(abierta=True)
-    return render(request, 'restaurante_app/cerrar_mesa_seleccionar.html', {'mesas_abiertas': mesas_abiertas})    
+
+
 def cerrar_mesa_detalle(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)

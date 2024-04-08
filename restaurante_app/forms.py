@@ -26,5 +26,8 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = '__all__'    
+
+class CerrarMesaForm(forms.Form):
+    mesa = forms.ModelChoiceField(queryset=Mesa.objects.filter(abierta=True))        
         
             

@@ -1,4 +1,3 @@
-<!-- restaurante_app/templates/restaurante_app/lista_mesas.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -9,6 +8,10 @@
             <li>
                 {{ mesa.nombre }}
                 <a href="{% url 'agregar_comanda' mesa_id=mesa.id %}">Agregar Comanda</a>
+                <form action="{% url 'cerrar_mesa' mesa_id=mesa.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar Mesa</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
