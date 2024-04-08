@@ -94,11 +94,12 @@ def cerrar_mesa(request, mesa_id):
     contabilidad.total_diario += total
     contabilidad.save()
 
-    # Eliminar la mesa y redirigir a la lista de mesas
+    # Elimina la mesa y comandas
     mesa.delete()
+    comandas.delete()
 
-    return redirect('lista_mesas')
-
+    # Renderiza la plantilla con el detalle de la mesa cerrada
+    return render(request, 'restaurante_app/cerrar_mesa_detalle.html', {'mesa': mesa, 'total': total})
 
 
 def cerrar_mesa_detalle(request, mesa_id):

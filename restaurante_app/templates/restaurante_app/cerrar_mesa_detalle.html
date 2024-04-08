@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body>
+        <h1>Detalle de Mesa Cerrada</h1>
+        <p>La mesa {{ mesa.nombre }} se ha cerrado correctamente.</p>
+        <p>Total de la cuenta: {{ total }}</p>
+        <p>Se ha actualizado la contabilidad correctamente.</p>
+        <a href="{% url 'lista_mesas' %}">Volver a la lista de mesas</a>
+    </body>
+{% endblock %}
