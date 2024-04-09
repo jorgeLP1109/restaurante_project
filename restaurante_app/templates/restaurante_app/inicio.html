@@ -1,16 +1,26 @@
-<!-- templates/restaurante_app/inicio.html -->
-
 {% extends 'base.html' %}
-{% if user.is_authenticated %}
-    <p>Bienvenido, {{ user.username }}.</p>
-{% else %}
-    <a href="{% url 'login' %}">Iniciar sesión</a>
-{% endif %}
-
 
 {% block title %}Inicio{% endblock %}
 
+{% block styles %}
+<style>
+  body {
+    background-image: url('/5.jpg'); /* Ruta de la imagen de fondo */
+    background-size: cover; /* Ajusta la imagen para que cubra toda la pantalla */
+    background-position: center; /* Centra la imagen */
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="content">
+  {% if user.is_authenticated %}
+    <p>Bienvenido, {{ user.username }}.</p>
+  {% else %}
+    <a href="{% url 'login' %}">Iniciar sesión</a>
+  {% endif %}
+
   <h2>Bienvenido a Tu Restaurante</h2>
-  <!-- Contenido de la página de inicio -->
+  <!-- Contenido adicional de la página de inicio -->
+</div>
 {% endblock %}

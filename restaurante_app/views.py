@@ -14,6 +14,8 @@ from .forms import ComandaForm
 from django.http import JsonResponse
 from datetime import datetime
 from .forms import CerrarMesaForm
+from django.db.models import Sum
+from django.db.models import Q
 
 def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
@@ -236,5 +238,54 @@ def eliminar_producto(request, pk):
     return redirect('lista_productos')
 
 def consultar_contabilidad(request):
+    # Obtener parámetros de consulta
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    day = request.GET.get('day')
+
+    # Filtrar los registros de contabilidad según los parámetros de consulta
     contabilidad = Contabilidad.objects.all()
-    return render(request, 'restaurante_app/contabilidad.html', {'contabilidad': contabilidad})
+
+    if year:
+        contabilidad = contabilidad.filter(fecha_cierre__year=year)
+    if month:
+        contabilidad = contabilidad.filter(fecha_cierre__month=month)
+    if day:
+        contabilidad = contabilidad.filter(fecha_cierre__day=day)
+
+    # Calcular el total sumando los valores de los registros filtrados
+    total = contabilidad.aggregate(total=Sum('total_diario'))['total']
+
+    # Si no hay registros, establecer el total en cero
+    if total is None:
+        total = 0
+
+    return render(request, 'restaurante_app/contabilidad.html', {'contabilidad': contabilidad, 'total': total})
+
+def contabilidad(request):
+    contabilidad = Contabilidad.objects.all()
+
+    # Filtro por año
+    year = request.GET.get('year')
+    if year:
+        contabilidad = contabilidad.filter(fecha_cierre__year=year)
+
+    # Filtro por mes
+    month = request.GET.get('month')
+    if month:
+        contabilidad = contabilidad.filter(fecha_cierre__month=month)
+
+    # Filtro por día
+    day = request.GET.get('day')
+    if day:
+        contabilidad = contabilidad.filter(fecha_cierre__day=day)
+
+    # Calcular el total general
+    total_general = Contabilidad.objects.aggregate(total_general=Sum('total_diario'))['total_general'] or 0
+
+    context = {
+        'contabilidad': contabilidad,
+        'total_general': total_general
+    }
+
+    return render(request, 'contabilidad.html', context)

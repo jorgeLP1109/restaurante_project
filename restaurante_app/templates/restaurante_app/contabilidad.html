@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <h1>Consulta de Contabilidad</h1>
+    <h1>Consultar Contabilidad</h1>
+
+    <!-- Formulario para filtrar por año, mes y día -->
+    <form method="get">
+        <label for="year">Año:</label>
+        <input type="number" name="year" id="year" value="{{ request.GET.year }}" min="2000" max="2099">
+        <label for="month">Mes:</label>
+        <input type="number" name="month" id="month" value="{{ request.GET.month }}" min="1" max="12">
+        <label for="day">Día:</label>
+        <input type="number" name="day" id="day" value="{{ request.GET.day }}" min="1" max="31">
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Tabla de registros de contabilidad -->
     <table>
         <thead>
             <tr>
@@ -10,11 +24,17 @@
         </thead>
         <tbody>
             {% for registro in contabilidad %}
-                <tr>
-                    <td>{{ registro.fecha }}</td>
-                    <td>{{ registro.total_diario }}</td>
-                </tr>
+            <tr>
+                <td>{{ registro.fecha_cierre }}</td>
+                <td>{{ registro.total_diario }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Mostrar el total calculado -->
+    <p>Total: {{ total }}</p>
+
+    <!-- Botón para regresar a la lista de mesas -->
+    <a href="{% url 'lista_mesas' %}">Regresar a la lista de mesas</a>
 {% endblock %}
