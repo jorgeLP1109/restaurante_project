@@ -4,6 +4,7 @@ from .models import Producto
 from .models import Cliente
 from .models import Mesa
 from .models import Comanda
+from .models import Bebida
 
 class ComandaForm(forms.ModelForm):
     class Meta:
@@ -28,6 +29,11 @@ class ClienteForm(forms.ModelForm):
         fields = '__all__'    
 
 class CerrarMesaForm(forms.Form):
-    mesa = forms.ModelChoiceField(queryset=Mesa.objects.filter(abierta=True))        
+    mesa = forms.ModelChoiceField(queryset=Mesa.objects.filter(abierta=True))   
+
+class BebidaForm(forms.ModelForm):
+    class Meta:
+        model = Bebida
+        fields = ['nombre', 'descripcion', 'cantidad_disponible']         
         
             

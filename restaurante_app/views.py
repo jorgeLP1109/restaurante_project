@@ -16,6 +16,8 @@ from datetime import datetime
 from .forms import CerrarMesaForm
 from django.db.models import Sum
 from django.db.models import Q
+from .models import Bebida
+from .forms import BebidaForm
 
 def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
@@ -64,23 +66,7 @@ def abrir_mesa(request):
         form = MesaForm()
     return render(request, 'restaurante_app/abrir_mesa.html', {'form': form})
 
-'''def cerrar_mesa(request, mesa_id):
-    mesa = get_object_or_404(Mesa, id=mesa_id)
-    comandas = Comanda.objects.filter(mesa=mesa)
-    total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
 
-    contabilidad, created = Contabilidad.objects.get_or_create(fecha_cierre__date=datetime.date.today())
-    contabilidad.total_diario += total
-    contabilidad.save()
-
-    # Eliminar la mesa y comandas
-    mesa.delete()
-    comandas.delete()
-
-    #return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total})
-
-    return JsonResponse({'success': True, 'total': total})
-'''
 def cerrar_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)
@@ -289,3 +275,33 @@ def contabilidad(request):
     }
 
     return render(request, 'contabilidad.html', context)
+
+def inventario(request):
+    bebidas = Bebida.objects.all()
+    return render(request, 'restaurante_app/inventario.html', {'bebidas': bebidas})
+
+def agregar_bebida(request):
+    if request.method == 'POST':
+        form = BebidaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventario')
+    else:
+        form = BebidaForm()
+    return render(request, 'restaurante_app/agregar_bebida.html', {'form': form})
+
+def editar_bebida(request, bebida_id):
+    bebida = get_object_or_404(Bebida, id=bebida_id)
+    if request.method == 'POST':
+        form = BebidaForm(request.POST, instance=bebida)
+        if form.is_valid():
+            form.save()
+            return redirect('inventario')
+    else:
+        form = BebidaForm(instance=bebida)
+    return render(request, 'restaurante_app/editar_bebida.html', {'form': form})
+
+def eliminar_bebida(request, bebida_id):
+    bebida = get_object_or_404(Bebida, id=bebida_id)
+    bebida.delete()
+    return redirect('inventario')
