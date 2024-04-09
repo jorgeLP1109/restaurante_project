@@ -16,26 +16,46 @@ from datetime import datetime
 from .forms import CerrarMesaForm
 from django.db.models import Sum
 from django.db.models import Q
-from .models import Bebida
 from .forms import BebidaForm
+from .models import Producto, Bebida, Articulo, Comanda
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Mesa, Bebida, Producto, Articulo, Comanda
 
 def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
-    productos = Producto.objects.all()  # Obtén todos los productos, puedes ajustar esto según tus necesidades
+    productos = Producto.objects.all()
+    bebidas = Bebida.objects.all()
+    articulos = Articulo.objects.all()
 
     if request.method == 'POST':
-        producto_id = request.POST.get('producto_id')
-        cantidad = request.POST.get('cantidad')
-
-        if producto_id and cantidad:
-            producto = get_object_or_404(Producto, id=producto_id)
-            comanda, created = Comanda.objects.get_or_create(mesa=mesa, producto=producto)
-            comanda.cantidad += int(cantidad)
-            comanda.save()
+        if 'form-bebida' in request.POST:
+            bebida_id = request.POST.get('bebida_id')
+            cantidad = request.POST.get('bebida_cantidad')
+            if bebida_id and cantidad:
+                bebida = get_object_or_404(Bebida, id=bebida_id)
+                comanda, created = Comanda.objects.get_or_create(mesa=mesa, bebida=bebida)
+                comanda.cantidad += int(cantidad)
+                comanda.save()
+        elif 'form-producto' in request.POST:
+            producto_id = request.POST.get('producto_id')
+            cantidad = request.POST.get('producto_cantidad')
+            if producto_id and cantidad:
+                producto = get_object_or_404(Producto, id=producto_id)
+                comanda, created = Comanda.objects.get_or_create(mesa=mesa, producto=producto)
+                comanda.cantidad += int(cantidad)
+                comanda.save()
+        elif 'form-articulo' in request.POST:
+            articulo_id = request.POST.get('articulo_id')
+            cantidad = request.POST.get('articulo_cantidad')
+            if articulo_id and cantidad:
+                articulo = get_object_or_404(Articulo, id=articulo_id)
+                comanda, created = Comanda.objects.get_or_create(mesa=mesa, articulo=articulo)
+                comanda.cantidad += int(cantidad)
+                comanda.save()
 
     comandas = Comanda.objects.filter(mesa=mesa)
-
-    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'comandas': comandas})
+    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'bebidas': bebidas, 'articulos': articulos, 'comandas': comandas})
 
 def crear_comanda(request):
     if request.method == 'POST':

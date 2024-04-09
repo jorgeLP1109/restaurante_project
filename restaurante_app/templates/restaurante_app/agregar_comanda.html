@@ -4,7 +4,24 @@
 {% block content %}
     <h2>Agregar Comanda - {{ mesa.nombre }}</h2>
 
-    <form method="post">
+    <!-- Sección para agregar comanda de bebidas -->
+    <h3>Bebidas:</h3>
+    <form method="post" id="form-bebida">
+        {% csrf_token %}
+        <label for="bebida">Bebida:</label>
+        <select name="bebida_id" id="bebida">
+            {% for bebida in bebidas %}
+                <option value="{{ bebida.id }}">{{ bebida.nombre }}</option>
+            {% endfor %}
+        </select>
+        <label for="bebida_cantidad">Cantidad:</label>
+        <input type="number" name="bebida_cantidad" id="bebida_cantidad" min="1" value="1">
+        <button type="submit" form="form-bebida">Agregar Comanda</button>
+    </form>
+
+    <!-- Sección para agregar comanda de productos -->
+    <h3>Productos:</h3>
+    <form method="post" id="form-producto">
         {% csrf_token %}
         <label for="producto">Producto:</label>
         <select name="producto_id" id="producto">
@@ -12,9 +29,24 @@
                 <option value="{{ producto.id }}">{{ producto.nombre }}</option>
             {% endfor %}
         </select>
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" name="cantidad" id="cantidad" min="1" value="1">
-        <button type="submit">Agregar Comanda</button>
+        <label for="producto_cantidad">Cantidad:</label>
+        <input type="number" name="producto_cantidad" id="producto_cantidad" min="1" value="1">
+        <button type="submit" form="form-producto">Agregar Comanda</button>
+    </form>
+
+    <!-- Sección para agregar comanda de artículos -->
+    <h3>Artículos:</h3>
+    <form method="post" id="form-articulo">
+        {% csrf_token %}
+        <label for="articulo">Artículo:</label>
+        <select name="articulo_id" id="articulo">
+            {% for articulo in articulos %}
+                <option value="{{ articulo.id }}">{{ articulo.nombre }}</option>
+            {% endfor %}
+        </select>
+        <label for="articulo_cantidad">Cantidad:</label>
+        <input type="number" name="articulo_cantidad" id="articulo_cantidad" min="1" value="1">
+        <button type="submit" form="form-articulo">Agregar Comanda</button>
     </form>
 
     <h3>Comandas Actuales:</h3>
