@@ -1,6 +1,8 @@
 /* static/css/style.css */
 
 body {
+    background-image: url('ruta/a/tu/5.jpg');
+    background-size: cover;
     font-family: 'Arial', sans-serif;
     background-color: #f2f2f2;
     color: #333;
@@ -47,3 +49,4 @@ footer {
     padding: 1em;
     text-align: center;
 }
+
