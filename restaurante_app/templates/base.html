@@ -35,7 +35,8 @@
                 <a class="nav-link" href="{% url 'lista_productos' %}">Lista de Productos</a>
                 <a class="nav-link" href="{% url 'lista_mesas' %}">Lista de Mesas</a>
                 <a class="nav-link" href="{% url 'abrir_mesa' %}">Abrir Mesa</a>
-                
+                <a class="nav-link" href="{% url 'consultar_contabilidad' %}">contabilidad</a>
+
                 {% if mesas.last and mesas.last.id %}
                     <a class="nav-link" href="{% url 'cerrar_mesa' mesa_id=mesas.last.id %}">Cerrar Mesa</a>
         {% endif %}

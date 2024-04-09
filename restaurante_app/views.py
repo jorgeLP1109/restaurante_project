@@ -235,3 +235,6 @@ def eliminar_producto(request, pk):
     producto.delete()
     return redirect('lista_productos')
 
+def consultar_contabilidad(request):
+    contabilidad = Contabilidad.objects.all()
+    return render(request, 'restaurante_app/contabilidad.html', {'contabilidad': contabilidad})

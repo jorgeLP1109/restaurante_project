@@ -29,6 +29,7 @@ urlpatterns = [
     path('ver_comandas/', ver_comandas, name='ver_comandas'),
     path('agregar_comanda/<int:mesa_id>/', agregar_comanda, name='agregar_comanda'),
     path('cerrar_mesa/<int:mesa_id>/', cerrar_mesa, name='cerrar_mesa'),
+    path('consultar_contabilidad/', views.consultar_contabilidad, name='consultar_contabilidad'),
     
    
     
