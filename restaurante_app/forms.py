@@ -34,6 +34,6 @@ class CerrarMesaForm(forms.Form):
 class BebidaForm(forms.ModelForm):
     class Meta:
         model = Bebida
-        fields = ['nombre', 'descripcion', 'cantidad_disponible']         
+        fields = ['nombre', 'descripcion', 'cantidad_disponible', 'precio']        
         
             

@@ -6,8 +6,9 @@
 
     <!-- Sección para agregar comanda de bebidas -->
     <h3>Bebidas:</h3>
-    <form method="post" id="form-bebida">
+    <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="form-bebida">
         <label for="bebida">Bebida:</label>
         <select name="bebida_id" id="bebida">
             {% for bebida in bebidas %}
@@ -16,7 +17,7 @@
         </select>
         <label for="bebida_cantidad">Cantidad:</label>
         <input type="number" name="bebida_cantidad" id="bebida_cantidad" min="1" value="1">
-        <button type="submit" form="form-bebida">Agregar Comanda</button>
+        <button type="submit">Agregar Comanda</button>
     </form>
 
     <!-- Sección para agregar comanda de productos -->
@@ -36,8 +37,9 @@
 
     <!-- Sección para agregar comanda de artículos -->
     <h3>Artículos:</h3>
-    <form method="post" id="form-articulo">
+    <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="form-articulo">
         <label for="articulo">Artículo:</label>
         <select name="articulo_id" id="articulo">
             {% for articulo in articulos %}
@@ -46,7 +48,7 @@
         </select>
         <label for="articulo_cantidad">Cantidad:</label>
         <input type="number" name="articulo_cantidad" id="articulo_cantidad" min="1" value="1">
-        <button type="submit" form="form-articulo">Agregar Comanda</button>
+        <button type="submit">Agregar Comanda</button>
     </form>
 
     <h3>Comandas Actuales:</h3>

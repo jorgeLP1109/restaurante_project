@@ -1,4 +1,3 @@
-<!-- templates/restaurante_app/inventario.html -->
 {% extends 'base.html' %}
 
 {% block title %}Inventario{% endblock %}
@@ -12,6 +11,7 @@
         <th scope="col">Nombre</th>
         <th scope="col">Descripción</th>
         <th scope="col">Cantidad Disponible</th>
+        <th scope="col">Precio</th>
         <th scope="col">Acciones</th>
       </tr>
     </thead>
@@ -21,6 +21,7 @@
         <td>{{ bebida.nombre }}</td>
         <td>{{ bebida.descripcion }}</td>
         <td>{{ bebida.cantidad_disponible }}</td>
+        <td>{{ bebida.precio }}</td>  <!-- Nuevo campo de precio -->
         <td>
           <a href="{% url 'editar_bebida' bebida.id %}" class="btn btn-primary btn-sm">Editar</a>
           <a href="{% url 'eliminar_bebida' bebida.id %}" class="btn btn-danger btn-sm">Eliminar</a>

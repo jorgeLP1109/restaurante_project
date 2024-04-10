@@ -66,6 +66,7 @@
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Agregar Bebida</button>
+            <a href="{% url 'inventario' %}" type="submit">inventario</a>
         </form>
     </div>
 </body>
