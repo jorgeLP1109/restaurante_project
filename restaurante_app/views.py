@@ -10,13 +10,12 @@ from .forms import ClienteForm
 from django.urls import reverse
 from .models import Mesa, Comanda, Contabilidad
 from .forms import MesaForm
-from .forms import ComandaForm
 from django.http import JsonResponse
 from datetime import datetime
 from .forms import CerrarMesaForm
 from django.db.models import Sum
 from django.db.models import Q
-from .forms import BebidaForm
+from .forms import ComandaForm, BebidaForm
 from .models import Producto, Bebida, Articulo, Comanda
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -26,8 +25,7 @@ def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     productos = Producto.objects.all()
     bebidas = Bebida.objects.all()
-    articulos = Articulo.objects.all()
-
+    
     if request.method == 'POST':
         if 'form-bebida' in request.POST:
             bebida_id = request.POST.get('bebida_id')
@@ -38,6 +36,7 @@ def agregar_comanda(request, mesa_id):
                 comanda.cantidad += int(cantidad)
                 comanda.save()
         elif 'form-producto' in request.POST:
+            print("Formulario de productos procesado")
             producto_id = request.POST.get('producto_id')
             cantidad = request.POST.get('producto_cantidad')
             if producto_id and cantidad:
@@ -45,17 +44,19 @@ def agregar_comanda(request, mesa_id):
                 comanda, created = Comanda.objects.get_or_create(mesa=mesa, producto=producto)
                 comanda.cantidad += int(cantidad)
                 comanda.save()
-        elif 'form-articulo' in request.POST:
-            articulo_id = request.POST.get('articulo_id')
-            cantidad = request.POST.get('articulo_cantidad')
-            if articulo_id and cantidad:
-                articulo = get_object_or_404(Articulo, id=articulo_id)
-                comanda, created = Comanda.objects.get_or_create(mesa=mesa, articulo=articulo)
-                comanda.cantidad += int(cantidad)
-                comanda.save()
-
+        
     comandas = Comanda.objects.filter(mesa=mesa)
-    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'bebidas': bebidas, 'articulos': articulos, 'comandas': comandas})
+    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'bebidas': bebidas, 'comandas': comandas})
+
+def agregar_bebida(request):
+    if request.method == 'POST':
+        form = BebidaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventario')
+    else:
+        form = BebidaForm()
+    return render(request, 'restaurante_app/agregar_bebida.html', {'form': form})
 
 def crear_comanda(request):
     if request.method == 'POST':
@@ -90,7 +91,9 @@ def abrir_mesa(request):
 def cerrar_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)
-    total = sum(comanda.producto.precio * comanda.cantidad for comanda in comandas)
+    total = sum(comanda.bebida.precio * comanda.cantidad if comanda.bebida else
+                comanda.producto.precio * comanda.cantidad if comanda.producto else
+                comanda.articulo.precio * comanda.cantidad if comanda.articulo else 0 for comanda in comandas)
 
     # Lógica para cerrar la mesa
     contabilidad = Contabilidad.objects.last()  # Obtén la última instancia de Contabilidad
@@ -300,15 +303,6 @@ def inventario(request):
     bebidas = Bebida.objects.all()
     return render(request, 'restaurante_app/inventario.html', {'bebidas': bebidas})
 
-def agregar_bebida(request):
-    if request.method == 'POST':
-        form = BebidaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('inventario')
-    else:
-        form = BebidaForm()
-    return render(request, 'restaurante_app/agregar_bebida.html', {'form': form})
 
 def editar_bebida(request, bebida_id):
     bebida = get_object_or_404(Bebida, id=bebida_id)

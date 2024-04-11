@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
 
+
 class Contabilidad(models.Model):
     fecha_cierre = models.DateTimeField(default=timezone.now)
     total_diario = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -53,13 +54,24 @@ class Mesa(models.Model):
     def __str__(self):
         return self.nombre
 
-class Comanda(models.Model):
-    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField(default=1)
+class Bebida(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    cantidad_disponible = models.PositiveIntegerField(default=0)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Nuevo campo de precio
 
     def __str__(self):
-        return f"{self.producto.nombre} - {self.cantidad}"
+        return self.nombre
+
+
+class Comanda(models.Model):
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, null=True, blank=True)
+    bebida = models.ForeignKey(Bebida, on_delete=models.CASCADE, null=True, blank=True)
+    cantidad = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"Comanda {self.id} - Mesa {self.mesa.numero}"
 
 class Cuenta(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
@@ -74,15 +86,6 @@ class ItemCuenta(models.Model):
     cuenta = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-
-class Bebida(models.Model):
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    cantidad_disponible = models.PositiveIntegerField(default=0)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Nuevo campo de precio
-
-    def __str__(self):
-        return self.nombre
 
 class Articulo(models.Model):
     nombre = models.CharField(max_length=100)
