@@ -19,32 +19,31 @@
         <input type="number" name="bebida_cantidad" id="bebida_cantidad" min="1" value="1">
         <button type="submit">Agregar Comanda</button>
     </form>
-
-    <!-- Sección para agregar comanda de productos -->
-    <h3>Productos:</h3>
-    <form method="post" id="form-producto">
+    
+    <!-- Sección para agregar comanda de artículos -->
+    <h3>Comidas:</h3>
+    <form method="post">
         {% csrf_token %}
-        <label for="producto">Producto:</label>
-        <select name="form-producto" id="form-producto">
-            {% for producto in productos %}
-                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+        <input type="hidden" name="form-comida">
+        <label for="comida">Comida:</label>
+        <select name="comida_id" id="comida">
+            {% for comida in comidas %}
+                <option value="{{ comida.id }}">{{ comida.nombre }}</option>
             {% endfor %}
         </select>
-        <label for="producto_cantidad">Cantidad:</label>
-        <input type="number" name="producto_cantidad" id="producto_cantidad" min="1" value="1">
-        <button type="submit" form="form-producto">Agregar Comanda</button>
+        <label for="comida_cantidad">Cantidad:</label>
+        <input type="number" name="comida_cantidad" id="comida_cantidad" min="1" value="1">
+        <button type="submit">Agregar Comanda</button>
     </form>
-
-    <!-- Sección para agregar comanda de artículos -->
-    
 
     <h3>Comandas Actuales:</h3>
     <ul>
         {% for comanda in comandas %}
-            {% if comanda.producto %}
-                <li>{{ comanda.producto.nombre }} - {{ comanda.cantidad }}</li>
-            {% elif comanda.bebida %}
+            {% if comanda.bebida %}
                 <li>{{ comanda.bebida.nombre }} - {{ comanda.cantidad }}</li>
+            {% elif comanda.comida %}
+                <li>{{ comanda.comida.nombre }} - {{ comanda.cantidad }}</li>
+                    
             {% else %}
                 <li>No se encontró ningún artículo</li>
             {% endif %}

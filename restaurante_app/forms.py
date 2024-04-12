@@ -1,15 +1,15 @@
 # restaurante_app/forms.py
 from django import forms
-from .models import Producto
 from .models import Cliente
 from .models import Mesa
 from .models import Comanda
 from .models import Bebida
+from .models import Comida
 
 class ComandaForm(forms.ModelForm):
     class Meta:
         model = Comanda
-        fields = ['mesa', 'producto', 'cantidad']
+        fields = ['mesa', 'comida', 'bebida', 'cantidad']
         # Puedes personalizar los widgets, etiquetas, etc., según tus necesidades
 
 class MesaForm(forms.ModelForm):
@@ -17,11 +17,6 @@ class MesaForm(forms.ModelForm):
         model = Mesa
         fields = ['nombre', 'cliente_nombre', 'cliente_identificacion']
         
-class ProductoForm(forms.ModelForm):
-    class Meta:
-        model = Producto
-        fields = ['nombre', 'descripcion', 'precio']
-
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -34,6 +29,11 @@ class CerrarMesaForm(forms.Form):
 class BebidaForm(forms.ModelForm):
     class Meta:
         model = Bebida
-        fields = ['nombre', 'descripcion', 'cantidad_disponible', 'precio']        
+        fields = ['nombre', 'descripcion', 'cantidad_disponible', 'precio']
+
+class ComidaForm(forms.ModelForm):
+    class Meta:
+        model = Comida
+        fields = ['nombre', 'descripcion', 'cantidad_disponible', 'precio']                
         
             

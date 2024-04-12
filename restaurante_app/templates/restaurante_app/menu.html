@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de comidas{% endblock %}
+
+{% block content %}
+  <h2>Menu de Comidas</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Descripción</th>
+        <th scope="col">Cantidad Disponible</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for comida in comidas %}
+      <tr>
+        <td>{{ comida.nombre }}</td>
+        <td>{{ comida.descripcion }}</td>
+        <td>{{ comida.cantidad_disponible }}</td>
+        <td>{{ comida.precio }}</td>  <!-- Nuevo campo de precio -->
+        <td>
+          <a href="{% url 'editar_comida' comida.id %}" class="btn btn-primary btn-sm">Editar</a>
+          <a href="{% url 'eliminar_comida' comida.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'agregar_comida' %}" class="btn btn-success">Agregar Comida</a>
+</div>
+{% endblock %}

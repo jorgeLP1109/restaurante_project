@@ -4,8 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .models import Producto, Ticket, Cliente
-from .forms import ProductoForm
+from .models import Ticket, Cliente
 from .forms import ClienteForm
 from django.urls import reverse
 from .models import Mesa, Comanda, Contabilidad
@@ -15,38 +14,40 @@ from datetime import datetime
 from .forms import CerrarMesaForm
 from django.db.models import Sum
 from django.db.models import Q
-from .forms import ComandaForm, BebidaForm
-from .models import Producto, Bebida, Articulo, Comanda
-
+from .forms import ComandaForm, BebidaForm, ComidaForm
+from .models import Bebida, Articulo, Comanda, Comida
+from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Mesa, Bebida, Producto, Articulo, Comanda
+from .models import Mesa, Bebida, Articulo, Comanda, Comida
 
 def agregar_comanda(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
-    productos = Producto.objects.all()
     bebidas = Bebida.objects.all()
-    
+    comidas = Comida.objects.all()
+
     if request.method == 'POST':
         if 'form-bebida' in request.POST:
             bebida_id = request.POST.get('bebida_id')
             cantidad = request.POST.get('bebida_cantidad')
+            print(f"Bebida ID: {bebida_id}, Cantidad: {cantidad}")
             if bebida_id and cantidad:
                 bebida = get_object_or_404(Bebida, id=bebida_id)
                 comanda, created = Comanda.objects.get_or_create(mesa=mesa, bebida=bebida)
                 comanda.cantidad += int(cantidad)
                 comanda.save()
-        elif 'form-producto' in request.POST:
-            print("Formulario de productos procesado")
-            producto_id = request.POST.get('producto_id')
-            cantidad = request.POST.get('producto_cantidad')
-            if producto_id and cantidad:
-                producto = get_object_or_404(Producto, id=producto_id)
-                comanda, created = Comanda.objects.get_or_create(mesa=mesa, producto=producto)
+        
+        elif 'form-comida' in request.POST:
+            comida_id = request.POST.get('comida_id')
+            cantidad = request.POST.get('comida_cantidad')
+            print(f"Comida ID: {comida_id}, Cantidad: {cantidad}")        
+            if comida_id and cantidad:
+                comida = get_object_or_404(Comida, id=comida_id)
+                comanda, created = Comanda.objects.get_or_create(mesa=mesa, comida=comida)
                 comanda.cantidad += int(cantidad)
                 comanda.save()
-        
+
     comandas = Comanda.objects.filter(mesa=mesa)
-    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa, 'productos': productos, 'bebidas': bebidas, 'comandas': comandas})
+    return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa,'bebidas': bebidas,'comidas': comidas, 'comandas': comandas})
 
 def agregar_bebida(request):
     if request.method == 'POST':
@@ -57,6 +58,18 @@ def agregar_bebida(request):
     else:
         form = BebidaForm()
     return render(request, 'restaurante_app/agregar_bebida.html', {'form': form})
+
+def agregar_comida(request):
+    if request.method == 'POST':
+        form = ComidaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('menu')
+    else:
+        form = ComidaForm()
+    return render(request, 'restaurante_app/agregar_comida.html', {'form': form})    
+
+
 
 def crear_comanda(request):
     if request.method == 'POST':
@@ -91,9 +104,12 @@ def abrir_mesa(request):
 def cerrar_mesa(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)
-    total = sum(comanda.bebida.precio * comanda.cantidad if comanda.bebida else
-                comanda.producto.precio * comanda.cantidad if comanda.producto else
-                comanda.articulo.precio * comanda.cantidad if comanda.articulo else 0 for comanda in comandas)
+    
+    # Calcular el total como un Decimal en lugar de un float
+    total = Decimal(sum(comanda.bebida.precio * comanda.cantidad if comanda.bebida else
+                        comanda.comida.precio * comanda.cantidad if comanda.comida else
+                        comanda.articulo.precio * comanda.cantidad if comanda.articulo else 0 
+                        for comanda in comandas))
 
     # Lógica para cerrar la mesa
     contabilidad = Contabilidad.objects.last()  # Obtén la última instancia de Contabilidad
@@ -112,7 +128,7 @@ def cerrar_mesa(request, mesa_id):
     # Renderiza la plantilla con el detalle de la mesa cerrada
     return render(request, 'restaurante_app/cerrar_mesa_detalle.html', {'mesa': mesa, 'total': total})
 
-
+#0joooooooooooooooooooooooooooooooooo!!!!!!!!! solo producto aqui
 def cerrar_mesa_detalle(request, mesa_id):
     mesa = get_object_or_404(Mesa, id=mesa_id)
     comandas = Comanda.objects.filter(mesa=mesa)
@@ -121,19 +137,6 @@ def cerrar_mesa_detalle(request, mesa_id):
     mesas_abiertas = Mesa.objects.filter(abierta=True)  # Obtener las mesas abiertas
 
     return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total, 'mesas_abiertas': mesas_abiertas})
-
-
-def agregar_producto(request):
-    if request.method == 'POST':
-        form = ProductoForm(request.POST)
-        if form.is_valid():
-            # Guardar el producto si el formulario es válido
-            form.save()
-            return redirect('lista_productos')
-    else:
-        form = ProductoForm()
-
-    return render(request, 'restaurante_app/agregar_producto.html', {'form': form})
 
 def listar_clientes(request):
     clientes = Cliente.objects.all()
@@ -168,23 +171,6 @@ def eliminar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, pk=cliente_id)
     cliente.delete()
     return redirect('listar_clientes')
-
-
-def cargar_editar_producto(request, pk=None):
-    if pk:
-        producto = get_object_or_404(Producto, pk=pk)
-    else:
-        producto = None
-
-    if request.method == 'POST':
-        form = ProductoForm(request.POST, instance=producto)
-        if form.is_valid():
-            form.save()
-            return redirect('admin_interface')  # Cambia 'admin_interface' por la URL correcta
-    else:
-        form = ProductoForm(instance=producto)
-
-    return render(request, 'restaurante_app/cargar_editar_producto.html', {'form': form})
 
 def admin_interface(request):
     productos = Producto.objects.all()
@@ -222,29 +208,6 @@ def profile(request):
 def ver_perfil(request):
     # Aquí puedes agregar lógica para obtener información adicional del usuario si es necesario
     return render(request, 'restaurante_app/profile.html')
-
-def lista_productos(request):
-    productos = Producto.objects.all()  # Obtener todos los productos
-    return render(request, 'restaurante_app/lista_productos.html', {'productos': productos})
-
-def editar_producto(request, pk):
-    producto = get_object_or_404(Producto, id=pk)
-    if request.method == 'POST':
-        form = ProductoForm(request.POST, instance=producto)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_productos')
-    else:
-        form = ProductoForm(instance=producto)
-    return render(request, 'restaurante_app/editar_producto.html', {'form': form})
-    
-
-
-def eliminar_producto(request, pk):
-    producto = get_object_or_404(Producto, pk=pk)
-    # Lógica para eliminar el producto
-    producto.delete()
-    return redirect('lista_productos')
 
 def consultar_contabilidad(request):
     # Obtener parámetros de consulta
@@ -303,6 +266,10 @@ def inventario(request):
     bebidas = Bebida.objects.all()
     return render(request, 'restaurante_app/inventario.html', {'bebidas': bebidas})
 
+def menu(request):
+    comidas = Comida.objects.all()
+    return render(request, 'restaurante_app/menu.html', {'comidas': comidas})    
+
 
 def editar_bebida(request, bebida_id):
     bebida = get_object_or_404(Bebida, id=bebida_id)
@@ -319,3 +286,20 @@ def eliminar_bebida(request, bebida_id):
     bebida = get_object_or_404(Bebida, id=bebida_id)
     bebida.delete()
     return redirect('inventario')
+
+
+def editar_comida(request, bebida_id):
+    comida = get_object_or_404(Comida, id=comida_id)
+    if request.method == 'POST':
+        form = ComidaForm(request.POST, instance=comida)
+        if form.is_valid():
+            form.save()
+            return redirect('menu')
+    else:
+        form = ComidaForm(instance=comida)
+    return render(request, 'restaurante_app/editar_comida.html', {'form': form})
+
+def eliminar_comida(request, bebida_id):
+    comida = get_object_or_404(Comida, id=comida_id)
+    comida.delete()
+    return redirect('menu')    
