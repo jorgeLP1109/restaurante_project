@@ -49,6 +49,15 @@
             {% endif %}
         {% endfor %}
     </ul>
-
-    <a href="{% url 'cerrar_mesa' mesa_id=mesa.id %}">Cerrar Mesa</a>
+    <div>
+        <button class="button1">
+            <a href="{% url 'cerrar_mesa' mesa_id=mesa.id %}">Cerrar Mesa</a>
+        <div class="space">
+            
+        
+        <button class="button1">
+        <a href="{% url 'lista_mesas' %}">Lista de Mesas</a>
+        
+    </div>
+    
 {% endblock %}

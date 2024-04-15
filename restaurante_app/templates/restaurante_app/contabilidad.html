@@ -35,8 +35,12 @@
     <!-- Mostrar el total calculado -->
     <p>Total: {{ total }}</p>
 
+    
+
     <!-- Botón para regresar a la lista de mesas -->
-    <a href="{% url 'lista_mesas' %}">Regresar a la lista de mesas</a>
-    <br>
-    <a href="{% url 'consultar_contabilidad' %}">Reset</a>
+    <button class="button1">
+        <a href="{% url 'lista_mesas' %}">Lista de mesas</a>
+    <div class="space">
+    <button class="button1">    
+        <a href="{% url 'consultar_contabilidad' %}">Reset</a>
 {% endblock %}

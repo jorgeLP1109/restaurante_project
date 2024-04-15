@@ -7,5 +7,6 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Abrir Mesa</button>
+        <a class="btn btn-primary" href="{% url 'lista_mesas' %}">Lista de Mesas</a>
     </form>
 {% endblock %}

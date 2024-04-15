@@ -3,16 +3,16 @@
 {% block content %}
     <h2>Lista de Mesas</h2>
 
-    <ul>
+    <div class="grid-container">
         {% for mesa in mesas %}
-            <li>
-                {{ mesa.nombre }}
-                <a href="{% url 'agregar_comanda' mesa_id=mesa.id %}">Agregar Comanda</a>
+            <div class="mesa-card">
+                <p>{{ mesa.nombre }}</p>
+                <a href="{% url 'agregar_comanda' mesa_id=mesa.id %}" class="button">Agregar Comanda</a>
                 <form action="{% url 'cerrar_mesa' mesa_id=mesa.id %}" method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit">Cerrar Mesa</button>
+                    <button type="submit" class="button">Cerrar Mesa</button>
                 </form>
-            </li>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

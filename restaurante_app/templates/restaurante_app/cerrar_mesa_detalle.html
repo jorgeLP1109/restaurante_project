@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-    <body>
-        <h1>Detalle de Mesa Cerrada</h1>
-        <p>La mesa {{ mesa.nombre }} se ha cerrado correctamente.</p>
-        <p>Total de la cuenta: {{ total }}</p>
-        <p>Se ha actualizado la contabilidad correctamente.</p>
-        <a href="{% url 'lista_mesas' %}">Volver a la lista de mesas</a>
-    </body>
+    <h1>Detalle de Mesa Cerrada</h1>
+    <p>La mesa {{ mesa.nombre }} se ha cerrado correctamente.</p>
+    <p>Total de la cuenta: {{ total }}</p>
+    <p>Se ha actualizado la contabilidad correctamente.</p>
+    
+    <h2>Detalles de los Consumos:</h2>
+    <ul>
+        {% for comanda in comandas %}
+            {% if comanda.bebida %}
+                <li>{{ comanda.bebida.nombre }} - Precio: {{ comanda.bebida.precio }} - Cantidad: {{ comanda.cantidad }}</li>
+            {% elif comanda.comida %}
+                <li>{{ comanda.comida.nombre }} - Precio: {{ comanda.comida.precio }} - Cantidad: {{ comanda.cantidad }}</li>
+            {% endif %}
+        {% empty %}
+            <li>No hay consumos registrados.</li>
+        {% endfor %}
+    </ul>
+
+    <button onclick="window.print()">Imprimir Ticket</button>
+    <a href="{% url 'lista_mesas' %}">Volver a la lista de mesas</a>
 {% endblock %}

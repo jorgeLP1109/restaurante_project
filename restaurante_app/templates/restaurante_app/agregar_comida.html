@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Bebida</title>
+    <title>Agregar Comida</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,16 +57,39 @@
         form button:hover {
             background-color: #45a049;
         }
+
+        .button1 {
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            padding: 8px 18px;
+            background-color: #4caf50;
+            color: #fff;            
+            -webkit-text-stroke-color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button1.mesa-card {
+            background-color: #45a049;
+        }
     </style>
 </head>
-<body>
+<body>    
     <div class="container">
+        <button class="button1" >
+            <a href="{% url 'inicio' %}" type="submit" >Inicio</a>
+        </button>
         <h1>Agregar Comida</h1>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Agregar Comida</button>
+            <button>
             <a href="{% url 'menu' %}" type="submit">Menu</a>
+            </button>
         </form>
     </div>
 </body>

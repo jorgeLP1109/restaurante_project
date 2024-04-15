@@ -32,9 +32,12 @@ def agregar_comanda(request, mesa_id):
             print(f"Bebida ID: {bebida_id}, Cantidad: {cantidad}")
             if bebida_id and cantidad:
                 bebida = get_object_or_404(Bebida, id=bebida_id)
-                comanda, created = Comanda.objects.get_or_create(mesa=mesa, bebida=bebida)
-                comanda.cantidad += int(cantidad)
-                comanda.save()
+                comanda_existente = Comanda.objects.filter(mesa=mesa, bebida=bebida).first()
+                if comanda_existente:
+                    comanda_existente.cantidad += int(cantidad)
+                    comanda_existente.save()
+                else:
+                    Comanda.objects.create(mesa=mesa, bebida=bebida, cantidad=int(cantidad))
         
         elif 'form-comida' in request.POST:
             comida_id = request.POST.get('comida_id')
@@ -42,9 +45,12 @@ def agregar_comanda(request, mesa_id):
             print(f"Comida ID: {comida_id}, Cantidad: {cantidad}")        
             if comida_id and cantidad:
                 comida = get_object_or_404(Comida, id=comida_id)
-                comanda, created = Comanda.objects.get_or_create(mesa=mesa, comida=comida)
-                comanda.cantidad += int(cantidad)
-                comanda.save()
+                comanda_existente = Comanda.objects.filter(mesa=mesa, comida=comida).first()
+                if comanda_existente:
+                    comanda_existente.cantidad += int(cantidad)
+                    comanda_existente.save()
+                else:
+                    Comanda.objects.create(mesa=mesa, comida=comida, cantidad=int(cantidad))
 
     comandas = Comanda.objects.filter(mesa=mesa)
     return render(request, 'restaurante_app/agregar_comanda.html', {'mesa': mesa,'bebidas': bebidas,'comidas': comidas, 'comandas': comandas})
@@ -136,7 +142,11 @@ def cerrar_mesa_detalle(request, mesa_id):
 
     mesas_abiertas = Mesa.objects.filter(abierta=True)  # Obtener las mesas abiertas
 
-    return render(request, 'restaurante_app/cerrar_mesa.html', {'mesa': mesa, 'comandas': comandas, 'total': total, 'mesas_abiertas': mesas_abiertas})
+    # Print out the comandas queryset to debug
+    print(comandas)
+
+    
+    return render(request, 'restaurante_app/cerrar_mesa_detalle.html', {'mesa': mesa, 'comandas': comandas, 'total': total, 'mesas_abiertas': mesas_abiertas})
 
 def listar_clientes(request):
     clientes = Cliente.objects.all()
@@ -173,12 +183,11 @@ def eliminar_cliente(request, cliente_id):
     return redirect('listar_clientes')
 
 def admin_interface(request):
-    productos = Producto.objects.all()
     tickets = Ticket.objects.all()
     Cliente = Cliente.objects.all()
 
     return render(request, 'restaurante_app/admin_interface.html', {
-        'productos': productos,
+    
         'tickets': tickets,
         'Cliente': Cliente,
     })

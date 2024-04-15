@@ -25,7 +25,9 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
+                <button class="button1">
                 <a href="{% url 'login' %}">Iniciar sesión</a>
+                </button>
             </li>
             
             
@@ -48,7 +50,7 @@
             <li>
                 <form action="{% url 'cerrar_sesion' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit">Cerrar Sesión</button>
+                    <button class="button1">Cerrar Sesión</button>
                 </form>
             </li>
             {% endif %}
